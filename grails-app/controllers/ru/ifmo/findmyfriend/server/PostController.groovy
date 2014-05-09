@@ -20,7 +20,11 @@ class PostController {
 		if (u == null) {
 			u = new User(userId: user.id)
 		}
-		u.timeEnd = Long.parseLong(user.duration) + TimeUtils.getCurrentTimeGmt()
+		if (user.duration == -1) {
+			u.timeEnd = -1
+		} else {
+			u.timeEnd = user.duration + TimeUtils.getCurrentTimeGmt()
+		}
 		u.save()
 		render status: 200
     }
