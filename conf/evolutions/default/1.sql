@@ -8,6 +8,7 @@ create table user (
   latitude                  double,
   longitude                 double,
   end_time                  bigint,
+  update_time               bigint,
   constraint pk_user primary key (id))
 ;
 

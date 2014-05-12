@@ -11,13 +11,9 @@ import utils.TimeUtils;
 import views.html.*;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class Application extends Controller {
-
-    public static Result index() {
-        return ok(index.render("Your new application is ready."));
-    }
-
     public static Result getCoordinates() {
         long currentTime = TimeUtils.getCurrentTimeGmt();
         JsonNode json = request().body().asJson();
@@ -29,7 +25,8 @@ public class Application extends Controller {
             User user = User.find.byId(id);
             ObjectNode node = Json.newObject();
             node.put("id", user.id);
-            if (user.endTime == -1 || currentTime <= user.endTime) {
+            if (TimeUtils.getCurrentTimeGmt() - user.updateTime <= TimeUnit.MINUTES.toMillis(15) &&
+                    (user.endTime == -1 || currentTime <= user.endTime)) {
                 node.put("alive", true);
                 node.put("latitude", user.latitude);
                 node.put("longitude", user.longitude);
@@ -60,6 +57,7 @@ public class Application extends Controller {
         }
         user.latitude = json.get("latitude").asDouble();
         user.longitude = json.get("longitude").asDouble();
+        user.updateTime = TimeUtils.getCurrentTimeGmt();
         user.save();
         return ok();
     }
@@ -77,6 +75,7 @@ public class Application extends Controller {
         } else {
             user.endTime = TimeUtils.getCurrentTimeGmt() + duration;
         }
+        user.updateTime = TimeUtils.getCurrentTimeGmt();
         user.save();
         return ok();
     }

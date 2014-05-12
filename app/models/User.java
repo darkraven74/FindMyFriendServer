@@ -13,6 +13,7 @@ public class User extends Model {
     public double latitude;
     public double longitude;
     public long endTime;
+    public long updateTime;
 
     public User(Long id) {
         this.id = id;
