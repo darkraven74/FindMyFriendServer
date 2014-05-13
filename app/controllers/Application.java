@@ -23,6 +23,9 @@ public class Application extends Controller {
         for (int i = 0; i < ids.size(); i++) {
             long id = ids.get(i).asLong();
             User user = User.find.byId(id);
+            if (user == null) {
+            	continue;
+            }
             ObjectNode node = Json.newObject();
             node.put("id", user.id);
             if (TimeUtils.getCurrentTimeGmt() - user.updateTime <= TimeUnit.MINUTES.toMillis(15) &&
